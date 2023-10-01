@@ -22,11 +22,13 @@ class MetricLearningLoss(nn.Module):
         loss_same_class = -(pairwise_distances_sq * same_class_mask) / (2 * self.sigma**2)
         loss_same_class += 0.5 * torch.log(pairwise_distances_sq * same_class_mask / (2 * self.sigma**2))
         loss_same_class = torch.sum(loss_same_class) / (torch.sum(same_class_mask) - len(labels))
+        print("loss_same_class", loss_same_class)
 
         # Calculate the loss for pairs with different classes
         loss_diff_class = (pairwise_distances_sq * diff_class_mask) / (2 * self.omega**2)
         loss_diff_class -= 0.5 * torch.log(pairwise_distances_sq * diff_class_mask / (2 * self.omega**2))
         loss_diff_class = torch.sum(loss_diff_class) / (torch.sum(diff_class_mask) - len(labels))
+        print("loss_diff_class", loss_diff_class)
 
         # Total loss
         total_loss = loss_same_class + loss_diff_class
