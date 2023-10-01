@@ -28,10 +28,10 @@ This work is made available under the Nvidia Source Code License (1-Way Commerci
 Code was tested in virtual environment with Python 3.6. Install requirements:
 
 ```setup
-pip install torch==1.4.0
-pip install torchvision==0.5.0
-pip install numpy
-pip install Pillow
+pip install torch==1.8.1
+pip install torchvision==0.9.1
+pip install numpy==1.19.5
+pip install Pillow==8.4.0
 ```
 
 Additionally install APEX library for FP16 support (2x less memory, 2x faster): [Installing NVIDIA APEX](https://github.com/NVIDIA/apex#quick-start)

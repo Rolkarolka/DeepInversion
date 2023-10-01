@@ -23,6 +23,7 @@ import torchvision.utils as vutils
 from PIL import Image
 import numpy as np
 
+from MetricLearningLoss import MetricLearningLoss
 from utils.utils import lr_cosine_policy, lr_policy, beta_policy, mom_cosine_policy, clip, denormalize, create_folder
 
 
@@ -136,6 +137,7 @@ class DeepInversionClass(object):
         self.criterion = criterion
         self.network_output_function = network_output_function
         do_clip = True
+        self.metric_loss_fn = MetricLearningLoss(sigma=0.2, omega=1.0)
 
         if "r_feature" in coefficients:
             self.bn_reg_scale = coefficients["r_feature"]
@@ -275,6 +277,9 @@ class DeepInversionClass(object):
                 outputs = net_teacher(inputs_jit)
                 outputs = self.network_output_function(outputs)
 
+                # metric loss
+                metric_loss = self.metric_loss_fn(outputs, targets)
+
                 # R_cross classification loss
                 loss = criterion(outputs, targets)
 
@@ -326,7 +331,7 @@ class DeepInversionClass(object):
                 if self.adi_scale!=0.0:
                     loss_aux += self.adi_scale * loss_verifier_cig
 
-                loss = self.main_loss_multiplier * loss + loss_aux
+                loss = self.main_loss_multiplier * loss + loss_aux + metric_loss
 
                 if local_rank==0:
                     if iteration % save_every==0:
