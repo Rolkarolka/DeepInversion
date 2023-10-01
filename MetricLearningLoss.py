@@ -10,13 +10,13 @@ class MetricLearningLoss(nn.Module):
     def __call__(self, features, labels):
         # Calculate pairwise distances squared
         pairwise_distances_sq = torch.cdist(features, features, p=2)**2
-        print(pairwise_distances_sq)
+        print("pairwise_distances_sq", pairwise_distances_sq)
 
         # Create a mask for pairs with the same class and pairs with different classes
         same_class_mask = (labels.unsqueeze(0) == labels.unsqueeze(1)).float()
-        print(same_class_mask)
+        print("same_class_mask", same_class_mask)
         diff_class_mask = 1.0 - same_class_mask
-        print(diff_class_mask)
+        print("diff_class_mask", diff_class_mask)
 
         # Calculate the loss for pairs with the same class
         loss_same_class = -(pairwise_distances_sq * same_class_mask) / (2 * self.sigma**2)
