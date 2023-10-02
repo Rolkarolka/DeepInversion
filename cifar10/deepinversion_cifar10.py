@@ -20,7 +20,6 @@ import torch.optim as optim
 # import torch.utils.data
 import torch.nn.functional as F
 import torchvision.utils as vutils
-
 import os
 import glob
 import collections
@@ -308,6 +307,7 @@ if __name__ == "__main__":
     #         loss_scale=loss_scale)
 
     checkpoint = torch.load(args.teacher_weights)
+    # checkpoint = ResNet50_Weights.IMAGENET1K_V1
     net_teacher.load_state_dict(checkpoint)
     net_teacher.eval() #important, otherwise generated images will be non natural
     # if args.amp:

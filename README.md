@@ -91,3 +91,6 @@ Share your most exciting images at Twitter with hashtag [#Deepinversion](https:/
 	year = {2020}
 }
 ```
+
+## Usage
+https://github.com/huyvnphan/PyTorch_CIFAR10
