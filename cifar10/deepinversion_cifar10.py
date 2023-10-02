@@ -25,7 +25,7 @@ import os
 import glob
 import collections
 
-from cifar10.MetricLearningLoss import MetricLearningLoss
+from MetricLearningLoss import MetricLearningLoss
 from resnet_cifar import ResNet34, ResNet18
 
 try:
