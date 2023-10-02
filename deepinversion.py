@@ -336,9 +336,9 @@ class DeepInversionClass(object):
                 if local_rank==0:
                     if iteration % save_every==0:
                         print("------------iteration {}----------".format(iteration))
-                        print("metric loss", metric_loss.item())
                         print("total loss", loss.item())
                         print("loss_r_feature", loss_r_feature.item())
+                        print("metric loss", metric_loss.item())
                         print("main criterion", criterion(outputs, targets).item())
 
                         if self.hook_for_display is not None:
