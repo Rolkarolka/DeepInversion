@@ -19,17 +19,13 @@ import torch.backends.cudnn as cudnn
 import torch.optim as optim
 # import torch.utils.data
 import torch.nn.functional as F
-import torchvision
-import torchvision.transforms as transforms
 import torchvision.utils as vutils
-import torchvision.transforms as transforms
 
-import numpy as np
 import os
 import glob
 import collections
 
-from MetricLearningLoss import MetricLearningLoss
+from cifar10.MetricLearningLoss import MetricLearningLoss
 from resnet_cifar import ResNet34, ResNet18
 
 try:

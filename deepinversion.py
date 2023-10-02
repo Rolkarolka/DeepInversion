@@ -12,7 +12,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import unicode_literals
 
-import torch
 import torch.nn as nn
 import torch.optim as optim
 import collections
@@ -23,8 +22,8 @@ import torchvision.utils as vutils
 from PIL import Image
 import numpy as np
 
-from MetricLearningLoss import MetricLearningLoss
-from utils.utils import lr_cosine_policy, lr_policy, beta_policy, mom_cosine_policy, clip, denormalize, create_folder
+from cifar10.MetricLearningLoss import MetricLearningLoss
+from utils.utils import lr_cosine_policy, clip, denormalize, create_folder
 
 
 class DeepInversionFeatureHook():
