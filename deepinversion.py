@@ -108,6 +108,7 @@ class DeepInversionClass(object):
         hook_for_display: function to be executed at every print/save call, useful to check accuracy of verifier
         '''
 
+        self.metric_loss_multiplier = 0.01
         print("Deep inversion class generation")
         # for reproducibility
         torch.manual_seed(torch.cuda.current_device())
@@ -331,7 +332,7 @@ class DeepInversionClass(object):
                 if self.adi_scale!=0.0:
                     loss_aux += self.adi_scale * loss_verifier_cig
 
-                loss = self.main_loss_multiplier * loss + loss_aux + metric_loss
+                loss = self.main_loss_multiplier * loss + loss_aux + self.metric_loss_multiplier * metric_loss
 
                 if local_rank==0:
                     if iteration % save_every==0:
