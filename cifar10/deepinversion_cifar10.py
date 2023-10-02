@@ -76,7 +76,7 @@ class DeepInversionFeatureHook():
 def get_images(net, bs=256, epochs=1000, idx=-1, var_scale=0.00005,
                net_student=None, prefix=None, competitive_scale=0.01, train_writer = None, global_iteration=None,
                use_amp=False,
-               optimizer = None, inputs = None, bn_reg_scale = 0.0, random_labels = False, l2_coeff=0.0):
+               optimizer = None, inputs = None, bn_reg_scale = 0.0, random_labels = False, l2_coeff=0.0, metric_learning=True):
     '''
     Function returns inverted images from the pretrained model, parameters are tight to CIFAR dataset
     args in:
@@ -198,8 +198,9 @@ def get_images(net, bs=256, epochs=1000, idx=-1, var_scale=0.00005,
             best_inputs = inputs.data
 
         # metric loss
-        metric_loss = metric_loss_fn(outputs, targets)
-        loss = loss + metric_loss * 0.0001
+        if metric_learning:
+            metric_loss = metric_loss_fn(outputs, targets)
+            loss = loss + metric_loss * 0.0001
 
         # backward pass
         # if use_amp:
@@ -279,6 +280,7 @@ if __name__ == "__main__":
     parser.add_argument('--amp', action='store_true', help='use APEX AMP O1 acceleration')
     parser.add_argument('--exp_descr', default="try1", type=str, help='name to be added to experiment name')
     parser.add_argument('--teacher_weights', default="'./checkpoint/teacher_resnet34_only.weights'", type=str, help='path to load weights of the model')
+    parser.add_argument('--metric_learning', default=True, type=bool, help='metric learning is enabled')
 
     args = parser.parse_args()
 
@@ -353,4 +355,4 @@ if __name__ == "__main__":
                         net_student=net_student, prefix=prefix, competitive_scale=args.cig_scale,
                         train_writer=train_writer, global_iteration=global_iteration, use_amp=args.amp,
                         optimizer=optimizer_di, inputs=inputs, bn_reg_scale=args.r_feature_weight,
-                        var_scale=args.di_var_scale, random_labels=False, l2_coeff=args.di_l2_scale)
+                        var_scale=args.di_var_scale, random_labels=False, l2_coeff=args.di_l2_scale, metric_learning=args.metric_learning)
