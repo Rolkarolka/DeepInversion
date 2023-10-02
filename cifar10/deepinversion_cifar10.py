@@ -29,6 +29,7 @@ import os
 import glob
 import collections
 
+from MetricLearningLoss import MetricLearningLoss
 from resnet_cifar import ResNet34, ResNet18
 
 try:
@@ -101,6 +102,7 @@ def get_images(net, bs=256, epochs=1000, idx=-1, var_scale=0.00005,
     '''
 
     kl_loss = nn.KLDivLoss(reduction='batchmean').cuda()
+    metric_loss_fn = MetricLearningLoss(sigma=0.2, omega=1.0)
 
     # preventing backpropagation through student for Adaptive DeepInversion
     net_student.eval()
@@ -195,12 +197,16 @@ def get_images(net, bs=256, epochs=1000, idx=-1, var_scale=0.00005,
             best_cost = loss.item()
             best_inputs = inputs.data
 
+        # metric loss
+        metric_loss = metric_loss_fn(outputs, targets)
+        loss = loss + metric_loss * 0.0001
+
         # backward pass
-        if use_amp:
-            with amp.scale_loss(loss, optimizer) as scaled_loss:
-                scaled_loss.backward()
-        else:
-            loss.backward()
+        # if use_amp:
+        #     with amp.scale_loss(loss, optimizer) as scaled_loss:
+        #         scaled_loss.backward()
+        # else:
+        loss.backward()
 
         optimizer.step()
 
@@ -294,24 +300,24 @@ if __name__ == "__main__":
 
     optimizer_di = optim.Adam([inputs], lr=args.di_lr)
 
-    if args.amp:
-        opt_level = "O1"
-        loss_scale = 'dynamic'
-
-        [net_student, net_teacher], optimizer_di = amp.initialize(
-            [net_student, net_teacher], optimizer_di,
-            opt_level=opt_level,
-            loss_scale=loss_scale)
+    # if args.amp:
+    #     opt_level = "O1"
+    #     loss_scale = 'dynamic'
+    #
+    #     [net_student, net_teacher], optimizer_di = amp.initialize(
+    #         [net_student, net_teacher], optimizer_di,
+    #         opt_level=opt_level,
+    #         loss_scale=loss_scale)
 
     checkpoint = torch.load(args.teacher_weights)
     net_teacher.load_state_dict(checkpoint)
     net_teacher.eval() #important, otherwise generated images will be non natural
-    if args.amp:
-        # need to do this trick for FP16 support of batchnorms
-        net_teacher.train()
-        for module in net_teacher.modules():
-            if isinstance(module, nn.BatchNorm2d):
-                module.eval().half()
+    # if args.amp:
+    #     # need to do this trick for FP16 support of batchnorms
+    #     net_teacher.train()
+    #     for module in net_teacher.modules():
+    #         if isinstance(module, nn.BatchNorm2d):
+    #             module.eval().half()
 
     cudnn.benchmark = True
 

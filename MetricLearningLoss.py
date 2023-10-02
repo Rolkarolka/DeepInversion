@@ -22,6 +22,6 @@ class MetricLearningLoss(nn.Module):
                                 distance_squared / (2 * k) / (self.sigma ** 2))
                 else:
                     loss += (k / 2 - 1) * torch.log(distance_squared / (2 * k) / (self.omega ** 2)) - 0.5 * (
-                                distance_squared / (2 * k) / ( self.omega ** 2))
+                                distance_squared / (2 * k) / (self.omega ** 2))
 
         return loss

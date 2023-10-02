@@ -44,7 +44,7 @@ def run(cfg):
         model_name=cfg["model_name"],
         num_classes=cfg["num_classes"],
         pretrained=cfg["pretrained"],
-    )
+    ) # TODO
 
     checkpoint_file = cfg["checkpoint_file"]
     add_weights = cfg["weights_file"]
